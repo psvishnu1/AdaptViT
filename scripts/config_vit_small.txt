@@ -1,0 +1,38 @@
+# Used by update_lib1.py to apply mask-based skip edits to any ViT model.
+#
+# Required for each model:
+#   model_name   : human-readable label (for logging only)
+#   num_heads    : attention heads per transformer block  (6 / 12)
+#   num_blocks   : number of transformer blocks           (12 for all standard ViT)
+#   embed_dim    : token embedding dimension              (384 / 768)
+#   mlp_dim      : MLP hidden dimension                   (1536 / 3072)
+#   seq_len      : total tokens including CLS token       (197 for standard ViT)
+#   head_dim     : per-head feature dimension             (always 64 for ViT variants)
+#
+# All other values used by the script are DERIVED from these six parameters
+#
+# Derivations (computed automatically by script, shown here for reference):
+#   token_pairs       = seq_len // 2
+#   qkv_groups        = 3 * num_heads
+#   fused_qkv         = 3 * num_heads * token_pairs   (classification threshold)
+#   fused_attn        = num_heads * token_pairs        (also used for mlp_expand / mlp_contract)
+#   OUTPUT_QKV        = token_pairs * qkv_groups * head_dim * 2
+#   OUTPUT_ATTN       = seq_len * embed_dim
+#   BM_total          = token_pairs^2 * num_heads      (read from file to be safe)
+#   BM1_total         = token_pairs * (head_dim // 8) * num_heads
+#   BM_SIZE           = seq_len^2
+#   BM1_SIZE          = seq_len * head_dim
+#   mlp_expand_yinner = mlp_dim // (8 * num_heads)
+#   mlp_ch_stride     = mlp_dim // num_heads
+#   mlp_out_stride    = mlp_dim * 2
+#   mlp_wt_g_stride   = mlp_expand_yinner * embed_dim * 8
+#   con_wt_g_stride   = 8 * mlp_dim * 8
+#   con_wt_y_stride   = mlp_dim * 8
+
+model_name  = vit_small
+num_heads   = 6       
+num_blocks  = 12     
+embed_dim   = 384     
+mlp_dim     = 1536   
+seq_len     = 197     
+head_dim    = 64    
