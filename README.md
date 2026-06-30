@@ -80,6 +80,14 @@ AdaptViT/
 │   ├── model_config_vit_small.h        # Buffer sizes and dims for ViT-Small
 │   └── model_config_vit_base.h         # Buffer sizes and dims for ViT-Base
 │
+├── example_models/
+│   ├── augreg_vits16/
+│   │   ├── default_lib1_original.c              # Raw TVM-generated file (before patching)
+│   │   └── default_lib1_with_runtime_pruning.c  # After running update_lib1.py
+│   └── dino_vitb16/
+│       ├── default_lib1_original.c
+│       └── default_lib1_with_runtime_pruning.c
+│
 └── README.md
 ```
 
@@ -286,14 +294,27 @@ head_dim    = 64
 
 ---
 
+## Example Models
+
+The `example_models/` folder contains `default_lib1.c` before and after the
+`update_lib1.py` transformation for two models (AugReg ViT-Small, DINO ViT-Base),
+provided as a reference for the post-processing step.
+
+---
+
 ## Models Tested
 
-| Model | `timm` identifier | Params | Notes |
-|---|---|---|---|
-| DINO ViT-Small | `timm/vit_small_patch16_224.dino` | 22M | |
-| AugReg ViT-Small | `timm/vit_small_patch16_224.augreg_in21k_ft_in1k` | 22M | |
+| Model | `timm` identifier | Params |
+|---|---|---|
+| DINO ViT-Small | `timm/vit_small_patch16_224.dino` | 22M |
+| AugReg ViT-Small | `timm/vit_small_patch16_224.augreg_in21k_ft_in1k` | 22M |
 | DINO ViT-Base | `timm/vit_base_patch16_224.dino` | 86M | |
-| AugReg ViT-Base | `timm/vit_base_patch16_224.augreg_in21k_ft_in1k` | 86M | |
+| AugReg ViT-Base | `timm/vit_base_patch16_224.augreg_in21k_ft_in1k` | 86M |
+
+The paper reports results for AugReg ViT-Small and DINO ViT-Base. The remaining two
+models share identical architectures with their counterparts and therefore produce the
+same acceleration numbers — only the accuracy under pruning differs slightly between
+the two pretraining families.
 
 ---
 
